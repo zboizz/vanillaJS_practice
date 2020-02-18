@@ -10,7 +10,6 @@ function saveName(text){
     localStorage.setItem(USER_LS, text);
 }
 
-
 function handleSubmit(event){
     event.preventDefault(); //기본 동작을 막음
     const currentValue = input.value; //currentValue가 input한 값이 됨
@@ -19,13 +18,10 @@ function handleSubmit(event){
     saveName(currentValue);
 }
 
-
 function askForName() {
     form.classList.add(SHOWING_CN); 
     form.addEventListener("submit",handleSubmit)   
 }
-
-
 
 function paintGreeting(text){
     form.classList.remove(SHOWING_CN);
