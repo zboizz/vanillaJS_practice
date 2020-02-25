@@ -1,6 +1,8 @@
 const canvas = document.getElementById("jsCanvas");
 //https://developer.mozilla.org/ko/docs/Web/API/CanvasRenderingContext2D
-const colors = document.getElementsByClassName("jsColor");
+const colors = document.getElementsByClassName("jsColor");//붓색깔
+const range = document.getElementById("jsRange");//굵기
+const mode = document.getElementById("jsMode");//fill
 const ctx = canvas.getContext("2d");
 //캔버스에 그림을 그리기 위하여 ctx를 추가
 //canvas는 html의 한 요소인데 context를 가지고 있다.
@@ -12,6 +14,8 @@ ctx.strokeStyle = "#2c2c2c"; //그릴 선들의 기본적인 색깔을 지정
 ctx.lineWidth = 2.5; //선들의 기본 굵기
 
 let painting = false;
+let filling = false; 
+//fill을 눌렀을 때 painting이 되고 painting을 눌렀을때 fill이 되야함
 
 function stopPainting(){
     painting = false;
@@ -38,10 +42,12 @@ function onMouseMove(event){
 
     //console.log(x, y);    
 }
+/*
 function onMouseDown(event){
     //console.log(event);
     painting = true;    
 }
+*/
 /*
 function onMouseUp(event){
     stopPainting();
@@ -53,6 +59,32 @@ function onMouseLeave(event){
 }
 */
 
+function handleColorClick(event){
+    //console.log(event.target.style);
+    const color = event.target.style.backgroundColor;
+    //console.log(color);
+    ctx.strokeStyle = color;
+    
+}
+
+function handleRangeChange(event){
+    //console.log(event.target.value);
+    const size = event.target.value;
+    ctx.lineWidth = size;
+    
+}
+function handleModeClick(){
+    if(filling === true){
+        filling = false;
+        mode.innerText = "Fill"
+    }else{
+        filling = true;
+        mode.innerText = "Paint"
+    }
+    
+}
+
+
 if(canvas){
     canvas.addEventListener("mousemove", onMouseMove);
     canvas.addEventListener("mousedown", startPainting);//클릭했을때 발생
@@ -62,4 +94,19 @@ if(canvas){
     canvas.addEventListener("mouseleave", stopPainting);
 }
 
-console.log(colors);
+//console.log(colors);
+//HTMLCollection이 출력됨, 원하는 것은 array이기때문에 array를 뽑아줌
+//console.log(Array.from(colors));
+//getelement를 통해서 받아온 colors를 array.from을 통해서 array형식으로 잘 뽑아옴.
+
+Array.from(colors).forEach(color => color.addEventListener("click", handleColorClick));
+//클릭하면 나오는 array중 backgroundColor가 필요한 정보
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#Syntax
+
+if(range){
+    range.addEventListener("input", handleRangeChange);
+}
+
+if(mode){
+    mode.addEventListener("click", handleModeClick);
+}
