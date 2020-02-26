@@ -3,15 +3,29 @@ const canvas = document.getElementById("jsCanvas");
 const colors = document.getElementsByClassName("jsColor");//붓색깔
 const range = document.getElementById("jsRange");//굵기
 const mode = document.getElementById("jsMode");//fill
+const saveBtn = document.getElementById("jsSave");
+
+const INITIAL_COLOR = "#2c2c2c";
+const CANVAS_SIZE = 700;
+
 const ctx = canvas.getContext("2d");
 //캔버스에 그림을 그리기 위하여 ctx를 추가
 //canvas는 html의 한 요소인데 context를 가지고 있다.
 //그리고 context를 통해서 픽셀에 접근할 수 있는 방법이다.
-canvas.width = 700; //css에서 크기를 지정해놨지만 꾸며주는 크기 말고 본체의 크기를 지정해주어야함
-canvas.height = 700;
+canvas.width = CANVAS_SIZE; //css에서 크기를 지정해놨지만 꾸며주는 크기 말고 본체의 크기를 지정해주어야함
+canvas.height = CANVAS_SIZE;
 
-ctx.strokeStyle = "#2c2c2c"; //그릴 선들의 기본적인 색깔을 지정
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+//기본 배경색을 하얀색으로 변경해놓음
+
+ctx.strokeStyle = INITIAL_COLOR; //그릴 선들의 기본적인 색깔을 지정
+ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = 2.5; //선들의 기본 굵기
+
+//ctx.fillStyle="green";
+//ctx.fillRect(50, 20,  100, 49);
+//fillReact(x좌표, y좌표, 높이, 넓이);
 
 let painting = false;
 let filling = false; 
@@ -64,6 +78,7 @@ function handleColorClick(event){
     const color = event.target.style.backgroundColor;
     //console.log(color);
     ctx.strokeStyle = color;
+    ctx.fillStyle = color;
     
 }
 
@@ -80,10 +95,33 @@ function handleModeClick(){
     }else{
         filling = true;
         mode.innerText = "Paint"
+        //ctx.fillStyle = ctx.strokeStyle;
     }
     
 }
 
+function hanleCanvasClick(){
+    if(filling){    
+    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    //ctx.fillReac(0, 0, CANVAS_width, canvas.height);
+    }
+}
+
+function handleCM(evnet){
+    event.preventDefault(); //우클릭했을때 뜨는 옵션창을 막음
+    
+}
+
+function handleSaveClick(){ //저장버튼 클릭
+    //canvas의 데이터를 image처럼 얻는 것이 목표
+    const image = canvas.toDataURL(); //default type = PNG
+    //console.log(image);    
+    const link = document.createElement("a");
+    link.href =canvas.toDataURL(); //href는 이미지(url)가 되어야 하고
+    link.download = "PaintJS[EXPORT]"; //download는 이름을 가져와야한다.
+    //console.log(link);
+    link.click();
+}
 
 if(canvas){
     canvas.addEventListener("mousemove", onMouseMove);
@@ -92,6 +130,8 @@ if(canvas){
     canvas.addEventListener("mouseup", stopPainting);
     //canvas.addEventListener("mouseleave", onMouseLeave);
     canvas.addEventListener("mouseleave", stopPainting);
+    canvas.addEventListener("click", hanleCanvasClick);
+    canvas.addEventListener("contextmenu", handleCM); //우클릭했을때
 }
 
 //console.log(colors);
@@ -109,4 +149,8 @@ if(range){
 
 if(mode){
     mode.addEventListener("click", handleModeClick);
+}
+
+if(saveBtn){
+    saveBtn.addEventListener("click", handleSaveClick);
 }
